@@ -1,0 +1,1223 @@
+data.terraform_remote_state.vpc: Reading...
+module.eks.module.eks.data.aws_partition.current: Reading...
+module.eks.module.eks.module.kms.data.aws_caller_identity.current: Reading...
+module.eks.module.eks.data.aws_caller_identity.current: Reading...
+module.eks.module.eks.module.kms.data.aws_partition.current: Reading...
+module.eks.module.eks.data.aws_partition.current: Read complete after 0s [id=aws]
+module.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Reading...
+module.eks.module.eks.module.kms.data.aws_partition.current: Read complete after 0s [id=aws]
+module.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2764486067]
+module.eks.module.eks.module.eks_managed_node_group["primary"].data.aws_caller_identity.current: Reading...
+module.eks.module.eks.module.eks_managed_node_group["primary"].data.aws_partition.current: Reading...
+module.eks.module.eks.module.eks_managed_node_group["primary"].data.aws_partition.current: Read complete after 0s [id=aws]
+module.eks.module.eks.module.eks_managed_node_group["primary"].data.aws_iam_policy_document.assume_role_policy[0]: Reading...
+module.eks.module.eks.module.eks_managed_node_group["primary"].data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2560088296]
+data.terraform_remote_state.vpc: Read complete after 7s
+module.eks.module.eks.module.kms.data.aws_caller_identity.current: Read complete after 1s [id=778122232551]
+module.eks.module.eks.data.aws_caller_identity.current: Read complete after 1s [id=778122232551]
+module.eks.module.eks.module.eks_managed_node_group["primary"].data.aws_caller_identity.current: Read complete after 1s [id=778122232551]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # aws_iam_instance_profile.karpenter will be created
+  + resource "aws_iam_instance_profile" "karpenter" {
+      + arn         = (known after apply)
+      + create_date = (known after apply)
+      + id          = (known after apply)
+      + name        = "KarpenterNodeInstanceProfile-bmpd-generic-cluster"
+      + path        = "/"
+      + role        = (known after apply)
+      + tags_all    = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+      + unique_id   = (known after apply)
+    }
+
+  # aws_iam_role_policy.karpenter_controller will be created
+  + resource "aws_iam_role_policy" "karpenter_controller" {
+      + id     = (known after apply)
+      + name   = "karpenter-policy-bmpd-generic-cluster"
+      + policy = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action   = [
+                          + "pricing:GetProducts",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + role   = "karpenter-controller-bmpd-generic-cluster"
+    }
+
+  # helm_release.karpenter will be created
+  + resource "helm_release" "karpenter" {
+      + atomic                     = false
+      + chart                      = "karpenter"
+      + cleanup_on_fail            = false
+      + create_namespace           = true
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + manifest                   = (known after apply)
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "karpenter"
+      + namespace                  = "karpenter"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "https://charts.karpenter.sh"
+      + reset_values               = false
+      + reuse_values               = false
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + timeout                    = 300
+      + verify                     = false
+      + version                    = "0.16.1"
+      + wait                       = true
+      + wait_for_jobs              = false
+
+      + set {
+          + name  = "aws.defaultInstanceProfile"
+          + value = "KarpenterNodeInstanceProfile-bmpd-generic-cluster"
+        }
+      + set {
+          + name  = "clusterEndpoint"
+          + value = (known after apply)
+        }
+      + set {
+          + name  = "clusterName"
+          + value = (known after apply)
+        }
+      + set {
+          + name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+          + value = (known after apply)
+        }
+    }
+
+  # kubectl_manifest.karpenter_provisioner will be created
+  + resource "kubectl_manifest" "karpenter_provisioner" {
+      + api_version             = (known after apply)
+      + apply_only              = false
+      + force_conflicts         = false
+      + force_new               = false
+      + id                      = (known after apply)
+      + kind                    = (known after apply)
+      + live_manifest_incluster = (sensitive value)
+      + live_uid                = (known after apply)
+      + name                    = (known after apply)
+      + namespace               = (known after apply)
+      + server_side_apply       = false
+      + uid                     = (known after apply)
+      + validate_schema         = true
+      + wait_for_rollout        = true
+      + yaml_body               = (sensitive value)
+      + yaml_body_parsed        = (known after apply)
+      + yaml_incluster          = (sensitive value)
+    }
+
+  # module.eks.data.aws_eks_cluster_auth.eks_auth will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_eks_cluster_auth" "eks_auth" {
+      + id    = (known after apply)
+      + name  = (known after apply)
+      + token = (sensitive value)
+    }
+
+  # module.karpenter_irsa.data.aws_caller_identity.current will be read during apply
+  # (depends on a resource or a module with changes pending)
+ <= data "aws_caller_identity" "current" {
+      + account_id = (known after apply)
+      + arn        = (known after apply)
+      + id         = (known after apply)
+      + user_id    = (known after apply)
+    }
+
+  # module.karpenter_irsa.data.aws_iam_policy_document.karpenter_controller[0] will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "karpenter_controller" {
+      + id   = (known after apply)
+      + json = (known after apply)
+
+      + statement {
+          + actions   = [
+              + "ec2:CreateFleet",
+              + "ec2:CreateLaunchTemplate",
+              + "ec2:CreateTags",
+              + "ec2:DescribeAvailabilityZones",
+              + "ec2:DescribeInstanceTypeOfferings",
+              + "ec2:DescribeInstanceTypes",
+              + "ec2:DescribeInstances",
+              + "ec2:DescribeLaunchTemplates",
+              + "ec2:DescribeSecurityGroups",
+              + "ec2:DescribeSubnets",
+            ]
+          + resources = [
+              + "*",
+            ]
+        }
+      + statement {
+          + actions   = [
+              + "ec2:DeleteLaunchTemplate",
+              + "ec2:TerminateInstances",
+            ]
+          + resources = [
+              + "*",
+            ]
+
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + (known after apply),
+                ]
+              + variable = "ec2:ResourceTag/karpenter.sh/discovery/bmpd-generic-cluster"
+            }
+        }
+      + statement {
+          + actions   = [
+              + "ec2:RunInstances",
+            ]
+          + resources = [
+              + (known after apply),
+              + (known after apply),
+            ]
+
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + (known after apply),
+                ]
+              + variable = "ec2:ResourceTag/karpenter.sh/discovery/bmpd-generic-cluster"
+            }
+        }
+      + statement {
+          + actions   = [
+              + "ec2:RunInstances",
+            ]
+          + resources = [
+              + (known after apply),
+              + (known after apply),
+              + (known after apply),
+              + (known after apply),
+              + (known after apply),
+            ]
+        }
+      + statement {
+          + actions   = [
+              + "ssm:GetParameter",
+            ]
+          + resources = [
+              + "arn:aws:ssm:*:*:parameter/aws/service/*",
+            ]
+        }
+      + statement {
+          + actions   = [
+              + "iam:PassRole",
+            ]
+          + resources = [
+              + (known after apply),
+            ]
+        }
+    }
+
+  # module.karpenter_irsa.data.aws_iam_policy_document.this[0] will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "this" {
+      + id   = (known after apply)
+      + json = (known after apply)
+
+      + statement {
+          + actions = [
+              + "sts:AssumeRoleWithWebIdentity",
+            ]
+          + effect  = "Allow"
+
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "sts.amazonaws.com",
+                ]
+              + variable = (known after apply)
+            }
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "system:serviceaccount:karpenter:karpenter",
+                ]
+              + variable = (known after apply)
+            }
+
+          + principals {
+              + identifiers = [
+                  + (known after apply),
+                ]
+              + type        = "Federated"
+            }
+        }
+    }
+
+  # module.karpenter_irsa.data.aws_partition.current will be read during apply
+  # (depends on a resource or a module with changes pending)
+ <= data "aws_partition" "current" {
+      + dns_suffix         = (known after apply)
+      + id                 = (known after apply)
+      + partition          = (known after apply)
+      + reverse_dns_prefix = (known after apply)
+    }
+
+  # module.karpenter_irsa.aws_iam_policy.karpenter_controller[0] will be created
+  + resource "aws_iam_policy" "karpenter_controller" {
+      + arn         = (known after apply)
+      + description = "Provides permissions to handle node termination events via the Node Termination Handler"
+      + id          = (known after apply)
+      + name        = (known after apply)
+      + name_prefix = "AmazonEKS_Karpenter_Controller_Policy-"
+      + path        = "/"
+      + policy      = (known after apply)
+      + policy_id   = (known after apply)
+      + tags_all    = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+    }
+
+  # module.karpenter_irsa.aws_iam_role.this[0] will be created
+  + resource "aws_iam_role" "this" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = (known after apply)
+      + create_date           = (known after apply)
+      + force_detach_policies = true
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "karpenter-controller-bmpd-generic-cluster"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags_all              = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+      + unique_id             = (known after apply)
+    }
+
+  # module.karpenter_irsa.aws_iam_role_policy_attachment.karpenter_controller[0] will be created
+  + resource "aws_iam_role_policy_attachment" "karpenter_controller" {
+      + id         = (known after apply)
+      + policy_arn = (known after apply)
+      + role       = "karpenter-controller-bmpd-generic-cluster"
+    }
+
+  # module.eks.module.cluster_encryption_kms_key.aws_kms_alias.default[0] will be created
+  + resource "aws_kms_alias" "default" {
+      + arn            = (known after apply)
+      + id             = (known after apply)
+      + name           = "alias/generic-bmpd-generic-cluster-secrets-kms-key"
+      + name_prefix    = (known after apply)
+      + target_key_arn = (known after apply)
+      + target_key_id  = (known after apply)
+    }
+
+  # module.eks.module.cluster_encryption_kms_key.aws_kms_key.default[0] will be created
+  + resource "aws_kms_key" "default" {
+      + arn                                = (known after apply)
+      + bypass_policy_lockout_safety_check = false
+      + customer_master_key_spec           = "SYMMETRIC_DEFAULT"
+      + deletion_window_in_days            = 10
+      + description                        = "generic-bmpd-generic-cluster-secrets-kms-key"
+      + enable_key_rotation                = true
+      + id                                 = (known after apply)
+      + is_enabled                         = true
+      + key_id                             = (known after apply)
+      + key_usage                          = "ENCRYPT_DECRYPT"
+      + multi_region                       = false
+      + policy                             = (known after apply)
+      + tags_all                           = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+    }
+
+  # module.eks.module.eks.data.tls_certificate.this[0] will be read during apply
+  # (config refers to values not yet known)
+ <= data "tls_certificate" "this" {
+      + certificates = (known after apply)
+      + id           = (known after apply)
+      + url          = (known after apply)
+    }
+
+  # module.eks.module.eks.aws_cloudwatch_log_group.this[0] will be created
+  + resource "aws_cloudwatch_log_group" "this" {
+      + arn               = (known after apply)
+      + id                = (known after apply)
+      + name              = "/aws/eks/generic-bmpd-generic-cluster/cluster"
+      + retention_in_days = 90
+      + tags_all          = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+    }
+
+  # module.eks.module.eks.aws_eks_addon.this["kube-proxy"] will be created
+  + resource "aws_eks_addon" "this" {
+      + addon_name    = "kube-proxy"
+      + addon_version = (known after apply)
+      + arn           = (known after apply)
+      + cluster_name  = "generic-bmpd-generic-cluster"
+      + created_at    = (known after apply)
+      + id            = (known after apply)
+      + modified_at   = (known after apply)
+      + tags_all      = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+    }
+
+  # module.eks.module.eks.aws_eks_addon.this["vpc-cni"] will be created
+  + resource "aws_eks_addon" "this" {
+      + addon_name        = "vpc-cni"
+      + addon_version     = (known after apply)
+      + arn               = (known after apply)
+      + cluster_name      = "generic-bmpd-generic-cluster"
+      + created_at        = (known after apply)
+      + id                = (known after apply)
+      + modified_at       = (known after apply)
+      + resolve_conflicts = "OVERWRITE"
+      + tags_all          = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+    }
+
+  # module.eks.module.eks.aws_eks_cluster.this[0] will be created
+  + resource "aws_eks_cluster" "this" {
+      + arn                       = (known after apply)
+      + certificate_authority     = (known after apply)
+      + created_at                = (known after apply)
+      + enabled_cluster_log_types = [
+          + "api",
+          + "audit",
+          + "authenticator",
+        ]
+      + endpoint                  = (known after apply)
+      + id                        = (known after apply)
+      + identity                  = (known after apply)
+      + name                      = "generic-bmpd-generic-cluster"
+      + platform_version          = (known after apply)
+      + role_arn                  = (known after apply)
+      + status                    = (known after apply)
+      + tags_all                  = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+      + version                   = "1.22"
+
+      + encryption_config {
+          + resources = [
+              + "secrets",
+            ]
+
+          + provider {
+              + key_arn = (known after apply)
+            }
+        }
+
+      + kubernetes_network_config {
+          + ip_family         = "ipv4"
+          + service_ipv4_cidr = "172.20.0.0/16"
+        }
+
+      + timeouts {
+          + create = "60m"
+          + delete = "60m"
+          + update = "60m"
+        }
+
+      + vpc_config {
+          + cluster_security_group_id = (known after apply)
+          + endpoint_private_access   = true
+          + endpoint_public_access    = false
+          + public_access_cidrs       = [
+              + "0.0.0.0/0",
+            ]
+          + security_group_ids        = (known after apply)
+          + subnet_ids                = [
+              + "subnet-016b0ede7f8419078",
+              + "subnet-0a0c91ed57798daf8",
+              + "subnet-0fa8e545069bdaf17",
+            ]
+          + vpc_id                    = (known after apply)
+        }
+    }
+
+  # module.eks.module.eks.aws_iam_openid_connect_provider.oidc_provider[0] will be created
+  + resource "aws_iam_openid_connect_provider" "oidc_provider" {
+      + arn             = (known after apply)
+      + client_id_list  = [
+          + "sts.amazonaws.com",
+        ]
+      + id              = (known after apply)
+      + tags            = {
+          + "Name" = "generic-bmpd-generic-cluster-eks-irsa"
+        }
+      + tags_all        = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Name"                    = "generic-bmpd-generic-cluster-eks-irsa"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+      + thumbprint_list = (known after apply)
+      + url             = (known after apply)
+    }
+
+  # module.eks.module.eks.aws_iam_role.this[0] will be created
+  + resource "aws_iam_role" "this" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "eks.amazonaws.com"
+                        }
+                      + Sid       = "EKSClusterAssumeRole"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + description           = "generic-bmpd-generic-cluster-iam-role"
+      + force_detach_policies = true
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = (known after apply)
+      + name_prefix           = "generic-bmpd-generic-cluster-iam-role-"
+      + path                  = "/"
+      + tags_all              = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy {
+          + name   = "generic-bmpd-generic-cluster-iam-role"
+          + policy = (known after apply)
+        }
+    }
+
+  # module.eks.module.eks.aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"] will be created
+  + resource "aws_iam_role_policy_attachment" "this" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+      + role       = (known after apply)
+    }
+
+  # module.eks.module.eks.aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"] will be created
+  + resource "aws_iam_role_policy_attachment" "this" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+      + role       = (known after apply)
+    }
+
+  # module.eks.module.eks.aws_security_group.cluster[0] will be created
+  + resource "aws_security_group" "cluster" {
+      + arn                    = (known after apply)
+      + description            = "generic-bmpd-generic-cluster-sg"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = (known after apply)
+      + name_prefix            = "generic-bmpd-generic-cluster-sg-"
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name" = "generic-bmpd-generic-cluster-sg"
+        }
+      + tags_all               = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Name"                    = "generic-bmpd-generic-cluster-sg"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+      + vpc_id                 = "vpc-03c0aaade8a3b51fc"
+    }
+
+  # module.eks.module.eks.aws_security_group.node[0] will be created
+  + resource "aws_security_group" "node" {
+      + arn                    = (known after apply)
+      + description            = "generic-bmpd-generic-node-sg"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = (known after apply)
+      + name_prefix            = "generic-bmpd-generic-node-sg-"
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name"                                           = "generic-bmpd-generic-node-sg"
+          + "karpenter.sh/discovery/qa-bmpd-generic-cluster" = "bmpd-generic-cluster"
+        }
+      + tags_all               = {
+          + "Can_be_deleted"                                 = "true"
+          + "Created_using_terraform"                        = "true"
+          + "Environment"                                    = "generic"
+          + "Name"                                           = "generic-bmpd-generic-node-sg"
+          + "Product"                                        = "bmpd"
+          + "Use_case"                                       = "generic"
+          + "karpenter.sh/discovery/qa-bmpd-generic-cluster" = "bmpd-generic-cluster"
+        }
+      + vpc_id                 = "vpc-03c0aaade8a3b51fc"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.cluster["egress_nodes_443"] will be created
+  + resource "aws_security_group_rule" "cluster" {
+      + description              = "Cluster API to node groups"
+      + from_port                = 443
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 443
+      + type                     = "egress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.cluster["egress_nodes_kubelet"] will be created
+  + resource "aws_security_group_rule" "cluster" {
+      + description              = "Cluster API to node kubelets"
+      + from_port                = 10250
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 10250
+      + type                     = "egress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.cluster["ingress_nodes_443"] will be created
+  + resource "aws_security_group_rule" "cluster" {
+      + description              = "Node groups to cluster API"
+      + from_port                = 443
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 443
+      + type                     = "ingress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["1"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + cidr_blocks              = [
+          + "0.0.0.0/0",
+        ]
+      + from_port                = 0
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 65535
+      + type                     = "ingress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["2"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + cidr_blocks              = [
+          + "0.0.0.0/0",
+        ]
+      + from_port                = 0
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "-1"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 65535
+      + type                     = "ingress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["3"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + cidr_blocks              = [
+          + "0.0.0.0/0",
+        ]
+      + from_port                = 0
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 65535
+      + type                     = "egress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["egress_cluster_443"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + description              = "Node groups to cluster API"
+      + from_port                = 443
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 443
+      + type                     = "egress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["egress_https"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + cidr_blocks              = [
+          + "0.0.0.0/0",
+        ]
+      + description              = "Egress all HTTPS to internet"
+      + from_port                = 443
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 443
+      + type                     = "egress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["egress_ntp_tcp"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + cidr_blocks              = [
+          + "169.254.169.123/32",
+        ]
+      + description              = "Egress NTP/TCP to internet"
+      + from_port                = 123
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 123
+      + type                     = "egress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["egress_ntp_udp"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + cidr_blocks              = [
+          + "169.254.169.123/32",
+        ]
+      + description              = "Egress NTP/UDP to internet"
+      + from_port                = 123
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "udp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 123
+      + type                     = "egress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["egress_self_coredns_tcp"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + description              = "Node to node CoreDNS"
+      + from_port                = 53
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = true
+      + source_security_group_id = (known after apply)
+      + to_port                  = 53
+      + type                     = "egress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["egress_self_coredns_udp"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + description              = "Node to node CoreDNS"
+      + from_port                = 53
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "udp"
+      + security_group_id        = (known after apply)
+      + self                     = true
+      + source_security_group_id = (known after apply)
+      + to_port                  = 53
+      + type                     = "egress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["ingress_cluster_443"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + description              = "Cluster API to node groups"
+      + from_port                = 443
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 443
+      + type                     = "ingress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + description              = "Cluster API to node kubelets"
+      + from_port                = 10250
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 10250
+      + type                     = "ingress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + description              = "Node to node CoreDNS"
+      + from_port                = 53
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + self                     = true
+      + source_security_group_id = (known after apply)
+      + to_port                  = 53
+      + type                     = "ingress"
+    }
+
+  # module.eks.module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"] will be created
+  + resource "aws_security_group_rule" "node" {
+      + description              = "Node to node CoreDNS"
+      + from_port                = 53
+      + id                       = (known after apply)
+      + prefix_list_ids          = []
+      + protocol                 = "udp"
+      + security_group_id        = (known after apply)
+      + self                     = true
+      + source_security_group_id = (known after apply)
+      + to_port                  = 53
+      + type                     = "ingress"
+    }
+
+  # module.eks.module.eks.kubernetes_config_map_v1_data.aws_auth[0] will be created
+  + resource "kubernetes_config_map_v1_data" "aws_auth" {
+      + data  = (known after apply)
+      + force = true
+      + id    = (known after apply)
+
+      + metadata {
+          + name      = "aws-auth"
+          + namespace = "kube-system"
+        }
+    }
+
+  # module.eks.module.ssh-keypair.aws_key_pair.this will be created
+  + resource "aws_key_pair" "this" {
+      + arn             = (known after apply)
+      + fingerprint     = (known after apply)
+      + id              = (known after apply)
+      + key_name        = "generic-bmpd-generic-keypair"
+      + key_name_prefix = (known after apply)
+      + key_pair_id     = (known after apply)
+      + key_type        = (known after apply)
+      + public_key      = (known after apply)
+      + tags_all        = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+    }
+
+  # module.eks.module.ssh-keypair.tls_private_key.this will be created
+  + resource "tls_private_key" "this" {
+      + algorithm                     = "RSA"
+      + ecdsa_curve                   = "P224"
+      + id                            = (known after apply)
+      + private_key_openssh           = (sensitive value)
+      + private_key_pem               = (sensitive value)
+      + private_key_pem_pkcs8         = (sensitive value)
+      + public_key_fingerprint_md5    = (known after apply)
+      + public_key_fingerprint_sha256 = (known after apply)
+      + public_key_openssh            = (known after apply)
+      + public_key_pem                = (known after apply)
+      + rsa_bits                      = 4096
+    }
+
+  # module.eks.module.eks.module.eks_managed_node_group["primary"].aws_eks_node_group.this[0] will be created
+  + resource "aws_eks_node_group" "this" {
+      + ami_type               = (known after apply)
+      + arn                    = (known after apply)
+      + capacity_type          = "ON_DEMAND"
+      + cluster_name           = "generic-bmpd-generic-cluster"
+      + disk_size              = (known after apply)
+      + force_update_version   = true
+      + id                     = (known after apply)
+      + instance_types         = [
+          + "t2.large",
+          + "t3a.xlarge",
+        ]
+      + node_group_name        = (known after apply)
+      + node_group_name_prefix = "primary-"
+      + node_role_arn          = (known after apply)
+      + release_version        = (known after apply)
+      + resources              = (known after apply)
+      + status                 = (known after apply)
+      + subnet_ids             = [
+          + "subnet-016b0ede7f8419078",
+          + "subnet-0a0c91ed57798daf8",
+          + "subnet-0fa8e545069bdaf17",
+        ]
+      + tags                   = {
+          + "Name" = "primary"
+        }
+      + tags_all               = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Name"                    = "primary"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+      + version                = (known after apply)
+
+      + launch_template {
+          + id      = (known after apply)
+          + name    = (known after apply)
+          + version = (known after apply)
+        }
+
+      + scaling_config {
+          + desired_size = 1
+          + max_size     = 10
+          + min_size     = 1
+        }
+
+      + timeouts {
+          + create = "60m"
+          + delete = "60m"
+          + update = "60m"
+        }
+    }
+
+  # module.eks.module.eks.module.eks_managed_node_group["primary"].aws_iam_role.this[0] will be created
+  + resource "aws_iam_role" "this" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "ec2.amazonaws.com"
+                        }
+                      + Sid       = "EKSNodeAssumeRole"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + description           = "generic-bmpd-generic-primary-iam-role"
+      + force_detach_policies = true
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = (known after apply)
+      + name_prefix           = "generic-bmpd-generic-primary-iam-role-"
+      + path                  = "/"
+      + tags_all              = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+      + unique_id             = (known after apply)
+    }
+
+  # module.eks.module.eks.module.eks_managed_node_group["primary"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"] will be created
+  + resource "aws_iam_role_policy_attachment" "this" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      + role       = (known after apply)
+    }
+
+  # module.eks.module.eks.module.eks_managed_node_group["primary"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"] will be created
+  + resource "aws_iam_role_policy_attachment" "this" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+      + role       = (known after apply)
+    }
+
+  # module.eks.module.eks.module.eks_managed_node_group["primary"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"] will be created
+  + resource "aws_iam_role_policy_attachment" "this" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      + role       = (known after apply)
+    }
+
+  # module.eks.module.eks.module.eks_managed_node_group["primary"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"] will be created
+  + resource "aws_iam_role_policy_attachment" "this" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      + role       = (known after apply)
+    }
+
+  # module.eks.module.eks.module.eks_managed_node_group["primary"].aws_launch_template.this[0] will be created
+  + resource "aws_launch_template" "this" {
+      + arn                     = (known after apply)
+      + default_version         = (known after apply)
+      + description             = "generic-bmpd-generic-primary-lt"
+      + disable_api_termination = false
+      + ebs_optimized           = "true"
+      + id                      = (known after apply)
+      + key_name                = "generic-bmpd-generic-keypair"
+      + latest_version          = (known after apply)
+      + name                    = (known after apply)
+      + name_prefix             = "generic-bmpd-generic-primary-lt-"
+      + tags_all                = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+      + update_default_version  = true
+      + vpc_security_group_ids  = (known after apply)
+
+      + metadata_options {
+          + http_endpoint               = "enabled"
+          + http_protocol_ipv6          = "disabled"
+          + http_put_response_hop_limit = 2
+          + http_tokens                 = "required"
+          + instance_metadata_tags      = "disabled"
+        }
+
+      + monitoring {
+          + enabled = true
+        }
+
+      + tag_specifications {
+          + resource_type = "instance"
+          + tags          = {
+              + "Can_be_deleted"          = "true"
+              + "Created_using_terraform" = "true"
+              + "Environment"             = "generic"
+              + "Name"                    = "primary"
+              + "Product"                 = "bmpd"
+              + "Use_case"                = "generic"
+            }
+        }
+      + tag_specifications {
+          + resource_type = "network-interface"
+          + tags          = {
+              + "Can_be_deleted"          = "true"
+              + "Created_using_terraform" = "true"
+              + "Environment"             = "generic"
+              + "Name"                    = "primary"
+              + "Product"                 = "bmpd"
+              + "Use_case"                = "generic"
+            }
+        }
+      + tag_specifications {
+          + resource_type = "volume"
+          + tags          = {
+              + "Can_be_deleted"          = "true"
+              + "Created_using_terraform" = "true"
+              + "Environment"             = "generic"
+              + "Name"                    = "primary"
+              + "Product"                 = "bmpd"
+              + "Use_case"                = "generic"
+            }
+        }
+    }
+
+  # module.eks.module.eks.module.eks_managed_node_group["primary"].aws_security_group.this[0] will be created
+  + resource "aws_security_group" "this" {
+      + arn                    = (known after apply)
+      + description            = "generic-bmpd-generic-primary-ng-sg"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = (known after apply)
+      + name_prefix            = "generic-bmpd-generic-primary-ng-sg-"
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name" = "generic-bmpd-generic-primary-ng-sg"
+        }
+      + tags_all               = {
+          + "Can_be_deleted"          = "true"
+          + "Created_using_terraform" = "true"
+          + "Environment"             = "generic"
+          + "Name"                    = "generic-bmpd-generic-primary-ng-sg"
+          + "Product"                 = "bmpd"
+          + "Use_case"                = "generic"
+        }
+      + vpc_id                 = "vpc-03c0aaade8a3b51fc"
+    }
+
+Plan: 46 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + cluster_details = {
+      + cluster_details = {
+          + aws_auth_configmap_yaml                          = (known after apply)
+          + cloudwatch_log_group_arn                         = (known after apply)
+          + cloudwatch_log_group_name                        = "/aws/eks/generic-bmpd-generic-cluster/cluster"
+          + cluster_addons                                   = {
+              + kube-proxy = {
+                  + addon_name               = "kube-proxy"
+                  + addon_version            = (known after apply)
+                  + arn                      = (known after apply)
+                  + cluster_name             = "generic-bmpd-generic-cluster"
+                  + created_at               = (known after apply)
+                  + id                       = (known after apply)
+                  + modified_at              = (known after apply)
+                  + preserve                 = null
+                  + resolve_conflicts        = null
+                  + service_account_role_arn = null
+                  + tags                     = null
+                  + tags_all                 = {
+                      + Can_be_deleted          = "true"
+                      + Created_using_terraform = "true"
+                      + Environment             = "generic"
+                      + Product                 = "bmpd"
+                      + Use_case                = "generic"
+                    }
+                }
+              + vpc-cni    = {
+                  + addon_name               = "vpc-cni"
+                  + addon_version            = (known after apply)
+                  + arn                      = (known after apply)
+                  + cluster_name             = "generic-bmpd-generic-cluster"
+                  + created_at               = (known after apply)
+                  + id                       = (known after apply)
+                  + modified_at              = (known after apply)
+                  + preserve                 = null
+                  + resolve_conflicts        = "OVERWRITE"
+                  + service_account_role_arn = null
+                  + tags                     = null
+                  + tags_all                 = {
+                      + Can_be_deleted          = "true"
+                      + Created_using_terraform = "true"
+                      + Environment             = "generic"
+                      + Product                 = "bmpd"
+                      + Use_case                = "generic"
+                    }
+                }
+            }
+          + cluster_arn                                      = (known after apply)
+          + cluster_certificate_authority_data               = (known after apply)
+          + cluster_endpoint                                 = (known after apply)
+          + cluster_iam_role_arn                             = (known after apply)
+          + cluster_iam_role_name                            = (known after apply)
+          + cluster_iam_role_unique_id                       = (known after apply)
+          + cluster_id                                       = (known after apply)
+          + cluster_identity_providers                       = {}
+          + cluster_oidc_issuer_url                          = (known after apply)
+          + cluster_platform_version                         = (known after apply)
+          + cluster_primary_security_group_id                = (known after apply)
+          + cluster_security_group_arn                       = (known after apply)
+          + cluster_security_group_id                        = (known after apply)
+          + cluster_status                                   = (known after apply)
+          + cluster_version                                  = "1.22"
+          + eks_managed_node_groups                          = {
+              + primary = {
+                  + iam_role_arn                       = (known after apply)
+                  + iam_role_name                      = (known after apply)
+                  + iam_role_unique_id                 = (known after apply)
+                  + launch_template_arn                = (known after apply)
+                  + launch_template_id                 = (known after apply)
+                  + launch_template_latest_version     = (known after apply)
+                  + node_group_arn                     = (known after apply)
+                  + node_group_autoscaling_group_names = (known after apply)
+                  + node_group_id                      = (known after apply)
+                  + node_group_labels                  = null
+                  + node_group_resources               = (known after apply)
+                  + node_group_status                  = (known after apply)
+                  + node_group_taints                  = []
+                  + security_group_arn                 = (known after apply)
+                  + security_group_id                  = (known after apply)
+                }
+            }
+          + eks_managed_node_groups_autoscaling_group_names  = (known after apply)
+          + fargate_profiles                                 = {}
+          + kms_key_arn                                      = null
+          + kms_key_id                                       = null
+          + kms_key_policy                                   = null
+          + node_security_group_arn                          = (known after apply)
+          + node_security_group_id                           = (known after apply)
+          + oidc_provider                                    = (known after apply)
+          + oidc_provider_arn                                = (known after apply)
+          + self_managed_node_groups                         = {}
+          + self_managed_node_groups_autoscaling_group_names = []
+        }
+    }
+
+─────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.
